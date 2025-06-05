@@ -4,25 +4,14 @@ import { useQuery } from '@tanstack/react-query';
 import { AgGridReact } from 'ag-grid-react';
 import { countriesColumns } from '@/columns/countries';
 import { myTheme } from '@/styles/agTheme';
+import LoadingCellRenderer from '@/components/LoadingCellRenderer';
 
 export default function Countries() {
   const { t } = useTranslation();
   const gridRef = useRef<AgGridReact>(null);
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-  const columnDefs = useMemo(() => countriesColumns(t), [t]);
-
-  const defaultColDef = useMemo(
-    () => ({
-      flex: 1,
-      sortable: true,
-      filter: true,
-      resizable: true,
-    }),
-    []
-  );
-
-  const { data: rowData = [], isLoading } = useQuery({
+  const { data = [], isLoading } = useQuery({
     queryKey: ['countries'],
     queryFn: async () => {
       const token = sessionStorage.getItem('apitoken');
@@ -37,6 +26,29 @@ export default function Countries() {
     },
   });
 
+  const rowData = isLoading ? [null] : data;
+
+  const columnDefs = useMemo(() => {
+    const base = countriesColumns(t);
+    return base.map((col) => ({
+      ...col,
+      cellRenderer: (params: any) => {
+        if (!params.data) return <LoadingCellRenderer />;
+        return params.value;
+      },
+    }));
+  }, [t, isLoading]);
+
+  const defaultColDef = useMemo(
+    () => ({
+      flex: 1,
+      sortable: true,
+      filter: true,
+      resizable: true,
+    }),
+    []
+  );
+
   return (
     <div className="ag-theme-alpine" style={{ height: '100vh', width: '100%' }}>
       <AgGridReact
@@ -45,8 +57,9 @@ export default function Countries() {
         defaultColDef={defaultColDef}
         rowModelType="clientSide"
         theme={myTheme}
-        loading={isLoading}
         rowData={rowData}
+        pagination={true}
+        paginationPageSize={20}
       />
     </div>
   );
