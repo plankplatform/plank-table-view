@@ -2,8 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { useMemo, useRef } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { contractsColumns } from '@/columns/contracts';
-import { usePaginatedGridData } from '@/lib/usePaginatedGridData';
 import { myTheme } from '@/styles/agTheme';
+import { createServerSideDatasource } from '@/lib/createServerSideDatasource';
 
 export default function Contracts() {
   const { t } = useTranslation();
@@ -22,11 +22,16 @@ export default function Contracts() {
     []
   );
 
-  const { gridProps } = usePaginatedGridData({
-    url: `${baseUrl}/contracts`,
-    resource: 'contracts',
-    pageSize: 20,
-  });
+  const onGridReady = () => {
+    if (gridRef.current?.api) {
+      const datasource = createServerSideDatasource({
+        url: `${baseUrl}/contracts`,
+        resource: 'contracts',
+        pageSize: 20,
+      });
+      gridRef.current.api.setGridOption('serverSideDatasource', datasource);
+    }
+  };
 
   return (
     <div className="ag-theme-alpine" style={{ height: '100vh', width: '100%' }}>
@@ -34,8 +39,15 @@ export default function Contracts() {
         ref={gridRef}
         columnDefs={columnDefs}
         defaultColDef={defaultColDef}
+        rowModelType="serverSide"
+        cacheBlockSize={20}
         theme={myTheme}
-        {...gridProps}
+        suppressServerSideFullWidthLoadingRow={true}
+        rowBuffer={0}
+        blockLoadDebounceMillis={200}
+        onGridReady={onGridReady}
+        pagination={true}
+        paginationPageSize={20}
       />
     </div>
   );

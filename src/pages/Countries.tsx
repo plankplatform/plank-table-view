@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { useMemo, useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { AgGridReact } from 'ag-grid-react';
 import { countriesColumns } from '@/columns/countries';
-import { useGridData } from '@/lib/useGridData';
 import { myTheme } from '@/styles/agTheme';
 
 export default function Countries() {
@@ -22,10 +22,19 @@ export default function Countries() {
     []
   );
 
-  const { gridProps } = useGridData({
-    url: `${baseUrl}/geo/countries`,
-    resource: 'countries',
-    pageSize: 20,
+  const { data: rowData = [], isLoading } = useQuery({
+    queryKey: ['countries'],
+    queryFn: async () => {
+      const token = sessionStorage.getItem('apitoken');
+      const res = await fetch(`${baseUrl}/geo/countries`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      return Array.isArray(data) ? data : data.rows || [];
+    },
   });
 
   return (
@@ -34,8 +43,10 @@ export default function Countries() {
         ref={gridRef}
         columnDefs={columnDefs}
         defaultColDef={defaultColDef}
+        rowModelType="clientSide"
         theme={myTheme}
-        {...gridProps}
+        loading={isLoading}
+        rowData={rowData}
       />
     </div>
   );
