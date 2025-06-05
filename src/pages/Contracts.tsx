@@ -2,14 +2,13 @@ import { useTranslation } from 'react-i18next';
 import { useMemo, useRef } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { contractsColumns } from '@/columns/contracts';
-import { makeDatasource } from '@/lib/makeDatasource';
+import { usePaginatedGridData } from '@/lib/usePaginatedGridData';
 import { myTheme } from '@/styles/agTheme';
 
 export default function Contracts() {
   const { t } = useTranslation();
   const gridRef = useRef<AgGridReact>(null);
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
-  const token = sessionStorage.getItem('apitoken');
 
   const columnDefs = useMemo(() => contractsColumns(t), [t]);
 
@@ -23,10 +22,11 @@ export default function Contracts() {
     []
   );
 
-  const datasource = useMemo(() => {
-    if (!token) return null;
-    return makeDatasource({ url: `${baseUrl}/contracts` });
-  }, [baseUrl, token]);
+  const { gridProps } = usePaginatedGridData({
+    url: `${baseUrl}/contracts`,
+    resource: 'contracts',
+    pageSize: 20,
+  });
 
   return (
     <div className="ag-theme-alpine" style={{ height: '100vh', width: '100%' }}>
@@ -34,12 +34,8 @@ export default function Contracts() {
         ref={gridRef}
         columnDefs={columnDefs}
         defaultColDef={defaultColDef}
-        rowModelType="infinite"
-        pagination
-        paginationPageSize={20}
-        cacheBlockSize={20}
-        datasource={datasource || undefined}
         theme={myTheme}
+        {...gridProps}
       />
     </div>
   );

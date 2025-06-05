@@ -1,6 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { QueryClient } from '@tanstack/react-query';
 
+interface UsePaginatedGridDataOptions {
+  url: string;
+  resource: string;
+  pageSize?: number;
+}
+
+interface UsePaginatedGridDataResult {
+  gridProps: {
+    rowModelType: 'infinite';
+    pagination: boolean;
+    paginationPageSize: number;
+    cacheBlockSize: number;
+    datasource: any;
+  };
+}
+
 const AG_GRID_OPERATOR_MAP: Record<string, string> = {
   equals: '',
   notEqual: 'ne',
@@ -16,10 +32,14 @@ const AG_GRID_OPERATOR_MAP: Record<string, string> = {
   notBlank: 'not_null',
 };
 
-export const makeDatasource = ({ url }: { url: string }) => {
+export const usePaginatedGridData = ({
+  url,
+  resource,
+  pageSize = 20,
+}: UsePaginatedGridDataOptions): UsePaginatedGridDataResult => {
   const queryClient = new QueryClient();
 
-  return {
+  const datasource = {
     getRows: async (params: any) => {
       const { startRow, endRow, sortModel, filterModel } = params;
       const limit = endRow - startRow;
@@ -32,7 +52,6 @@ export const makeDatasource = ({ url }: { url: string }) => {
         .flatMap(([field, conf]: any) => {
           const operator = AG_GRID_OPERATOR_MAP[conf.type] ?? '';
           const value = encodeURIComponent(conf.filter ?? true);
-
           const key = operator ? `filter[${field}][${operator}]` : `filter[${field}]`;
           return [`${key}=${value}`];
         })
@@ -45,7 +64,7 @@ export const makeDatasource = ({ url }: { url: string }) => {
 
       try {
         const data = await queryClient.fetchQuery({
-          queryKey: ['contracts', { offset, limit, sort, filter }],
+          queryKey: [resource, { offset, limit, sort, filter }],
           queryFn: async () => {
             const res = await fetch(fullUrl, {
               headers: {
@@ -61,9 +80,19 @@ export const makeDatasource = ({ url }: { url: string }) => {
         const lastRow = data.lastRow ?? rows.length;
         params.successCallback(rows, lastRow);
       } catch (err: any) {
-        console.error('Errore fetch dati:', err.message || err);
+        console.error('Fetch error:', err.message || err);
         params.failCallback();
       }
+    },
+  };
+
+  return {
+    gridProps: {
+      rowModelType: 'infinite',
+      pagination: true,
+      paginationPageSize: pageSize,
+      cacheBlockSize: pageSize,
+      datasource,
     },
   };
 };
