@@ -8,6 +8,7 @@ export default function Home() {
     { key: 'digital_contracts', path: '/digital-contracts' },
     { key: 'contracts', path: '/contracts' },
     { key: 'invoices', path: '/invoices' },
+    { key: 'countries', path: '/countries' },
   ];
 
   return (

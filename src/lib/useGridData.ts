@@ -38,7 +38,7 @@ export const useGridData = ({
     gridProps: {
       pagination: true,
       paginationPageSize: pageSize,
-      rowData: data?.rows || [],
+      rowData: data || [],
     },
   };
 };

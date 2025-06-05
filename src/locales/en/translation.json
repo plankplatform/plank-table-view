@@ -3,6 +3,7 @@
   "sections": {
     "digital_contracts": "Digital Contracts",
     "contracts": "Contracts",
-    "invoices": "Invoices"
+    "invoices": "Invoices",
+    "countries": "Countries"
   }
 }
