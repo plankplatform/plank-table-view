@@ -23,7 +23,7 @@ interface CreateServerSideDatasourceOptions {
   pageSize?: number;
 }
 
-export function createServerSideDatasource({
+export function makeDatasource({
   url,
   resource,
   pageSize = 20,

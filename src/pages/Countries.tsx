@@ -5,17 +5,17 @@ import { AgGridReact } from 'ag-grid-react';
 import { countriesColumns } from '@/columns/countries';
 import { myTheme } from '@/styles/agTheme';
 import LoadingCellRenderer from '@/components/LoadingCellRenderer';
+import { ICellRendererParams } from 'ag-grid-community';
 
 export default function Countries() {
   const { t } = useTranslation();
   const gridRef = useRef<AgGridReact>(null);
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
   const { data = [], isLoading } = useQuery({
     queryKey: ['countries'],
     queryFn: async () => {
       const token = sessionStorage.getItem('apitoken');
-      const res = await fetch(`${baseUrl}/geo/countries`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/geo/countries`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -32,12 +32,12 @@ export default function Countries() {
     const base = countriesColumns(t);
     return base.map((col) => ({
       ...col,
-      cellRenderer: (params: any) => {
+      cellRenderer: (params: ICellRendererParams) => {
         if (!params.data) return <LoadingCellRenderer />;
         return params.value;
       },
     }));
-  }, [t, isLoading]);
+  }, [t]);
 
   const defaultColDef = useMemo(
     () => ({

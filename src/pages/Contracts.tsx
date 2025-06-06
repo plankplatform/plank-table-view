@@ -3,12 +3,11 @@ import { useMemo, useRef } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { contractsColumns } from '@/columns/contracts';
 import { myTheme } from '@/styles/agTheme';
-import { createServerSideDatasource } from '@/lib/createServerSideDatasource';
+import { makeDatasource } from '@/lib/makeDatasource';
 
 export default function Contracts() {
   const { t } = useTranslation();
   const gridRef = useRef<AgGridReact>(null);
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
   const columnDefs = useMemo(() => contractsColumns(t), [t]);
 
@@ -22,16 +21,13 @@ export default function Contracts() {
     []
   );
 
-  const onGridReady = () => {
-    if (gridRef.current?.api) {
-      const datasource = createServerSideDatasource({
-        url: `${baseUrl}/contracts`,
-        resource: 'contracts',
-        pageSize: 20,
-      });
-      gridRef.current.api.setGridOption('serverSideDatasource', datasource);
-    }
-  };
+  const datasource = useMemo(() => {
+    return makeDatasource({
+      url: `${import.meta.env.VITE_API_BASE_URL}/contracts`,
+      resource: 'contracts',
+      pageSize: 20,
+    });
+  }, []);
 
   return (
     <div className="ag-theme-alpine" style={{ height: '100vh', width: '100%' }}>
@@ -45,9 +41,9 @@ export default function Contracts() {
         suppressServerSideFullWidthLoadingRow={true}
         rowBuffer={0}
         blockLoadDebounceMillis={200}
-        onGridReady={onGridReady}
         pagination={true}
         paginationPageSize={20}
+        serverSideDatasource={datasource}
       />
     </div>
   );
