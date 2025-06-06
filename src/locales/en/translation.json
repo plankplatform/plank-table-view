@@ -5,5 +5,13 @@
     "contracts": "Contracts",
     "invoices": "Invoices",
     "countries": "Countries"
+  },
+  "button": {
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "view": "View"
   }
 }

@@ -5,5 +5,13 @@
     "contracts": "Contratti",
     "invoices": "Fatture",
     "countries": "Paesi"
+  },
+  "button": {
+    "add": "Aggiungi",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "view": "Visualizza"
   }
 }

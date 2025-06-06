@@ -1,7 +1,12 @@
 import { TFunction } from 'i18next';
 import { ColDef } from 'ag-grid-community';
+import { ActionButtonsRenderer } from '@/components/ActionButtonsRenderer';
 
-export const contractsColumns = (t: TFunction): ColDef[] => [
+export const contractsColumns = (
+  t: TFunction,
+  onView: (row: any) => void,
+  onEdit: (row: any) => void
+): ColDef[] => [
   {
     field: 'utility',
     headerName: t('Utility'),
@@ -48,5 +53,14 @@ export const contractsColumns = (t: TFunction): ColDef[] => [
     field: 'contract_info',
     headerName: t('Info Contratto'),
     filter: false,
+  },
+  {
+    headerName: '',
+    field: 'actions',
+    cellRenderer: ActionButtonsRenderer({ onView, onEdit }),
+    filter: false,
+    sortable: false,
+    width: 100,
+    pinned: 'right',
   },
 ];

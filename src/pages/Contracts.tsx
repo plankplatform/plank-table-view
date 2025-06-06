@@ -9,7 +9,11 @@ export default function Contracts() {
   const { t } = useTranslation();
   const gridRef = useRef<AgGridReact>(null);
 
-  const columnDefs = useMemo(() => contractsColumns(t), [t]);
+  const onEdit = () => {};
+
+  const onView = () => {};
+
+  const columnDefs = useMemo(() => contractsColumns(t, onView, onEdit), [t]);
 
   const defaultColDef = useMemo(
     () => ({
