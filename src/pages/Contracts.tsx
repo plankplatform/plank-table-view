@@ -4,14 +4,16 @@ import { AgGridReact } from 'ag-grid-react';
 import { contractsColumns } from '@/columns/contracts';
 import { myTheme } from '@/styles/agTheme';
 import { makeDatasource } from '@/lib/makeDatasource';
+import { useNavigate } from 'react-router-dom';
 
 export default function Contracts() {
   const { t } = useTranslation();
   const gridRef = useRef<AgGridReact>(null);
 
-  const onEdit = () => {};
+  const navigate = useNavigate();
 
-  const onView = () => {};
+  const onView = (row: any) => navigate(`/contracts/${row.id}/view`);
+  const onEdit = (row: any) => navigate(`/contracts/${row.id}/edit`);
 
   const columnDefs = useMemo(() => contractsColumns(t, onView, onEdit), [t]);
 
