@@ -6,6 +6,17 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { AppRouter } from './router';
 import i18n from './i18n';
+import { ModuleRegistry } from 'ag-grid-community';
+import { AllEnterpriseModule } from 'ag-grid-enterprise';
+
+const licenseKey = import.meta.env.VITE_AG_GRID_LICENSE;
+
+console.log('AG Grid License Key:', licenseKey);
+if (licenseKey) {
+  LicenseManager.setLicenseKey(licenseKey);
+}
+
+ModuleRegistry.registerModules([AllEnterpriseModule]);
 
 const env = import.meta.env.VITE_APP_ENV;
 
@@ -54,7 +65,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <AppRouter />
-      {import.meta.env.VITE_APP_ENV === 'local' && <ReactQueryDevtools initialIsOpen={false} />}
+      {/* {import.meta.env.VITE_APP_ENV === 'local' && <ReactQueryDevtools initialIsOpen={false} />} */}
     </QueryClientProvider>
   </StrictMode>
 );

@@ -1,1 +1,17 @@
-{}
+{
+  "dashboard": "Dashboard",
+  "sections": {
+    "digital_contracts": "Contratti Digitali",
+    "contracts": "Contratti",
+    "invoices": "Fatture",
+    "countries": "Paesi"
+  },
+  "button": {
+    "add": "Aggiungi",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "view": "Visualizza"
+  }
+}
