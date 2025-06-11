@@ -4,7 +4,8 @@
     "digital_contracts": "Digital Contracts",
     "contracts": "Contracts",
     "invoices": "Invoices",
-    "countries": "Countries"
+    "countries": "Countries",
+    "tickets": "Tickets"
   },
   "button": {
     "add": "Add",

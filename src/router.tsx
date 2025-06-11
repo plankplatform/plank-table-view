@@ -5,6 +5,7 @@ import Invoices from './pages/Invoices';
 import Countries from './pages/Countries';
 import ContractView from './pages/ContractView';
 import ContractEdit from './pages/ContractEdit';
+import Tickets from './pages/Tickets';
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ export const router = createBrowserRouter([
     path: '/countries',
     element: <Countries />,
   },
+  {
+    path: '/tickets',
+    element: <Tickets />,
+  }
 ]);
 
 export function AppRouter() {

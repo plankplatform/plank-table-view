@@ -9,6 +9,7 @@ export default function Home() {
     { key: 'contracts', path: '/contracts' },
     { key: 'invoices', path: '/invoices' },
     { key: 'countries', path: '/countries' },
+    { key: 'tickets', path: '/tickets' },
   ];
 
   return (

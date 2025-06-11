@@ -41,13 +41,17 @@ export function makeDatasource({
 
       const filter = filterModel
         ? Object.entries(filterModel)
-            .flatMap(([field, conf]: any) => {
-              const operator = AG_GRID_OPERATOR_MAP[conf.type] ?? '';
-              const value = encodeURIComponent(conf.filter ?? true);
-              const key = operator ? `filter[${field}][${operator}]` : `filter[${field}]`;
-              return [`${key}=${value}`];
-            })
-            .join('&')
+          .flatMap(([field, conf]: any) => {
+            if (conf.filterType === 'set' && Array.isArray(conf.values)) {
+              return [`filter[${field}]=${conf.values.map(encodeURIComponent).join(',')}`];
+            }
+
+            const operator = AG_GRID_OPERATOR_MAP[conf.type] ?? '';
+            const value = encodeURIComponent(conf.filter ?? true);
+            const key = operator ? `filter[${field}][${operator}]` : `filter[${field}]`;
+            return [`${key}=${value}`];
+          })
+          .join('&')
         : '';
 
       const fullUrl =
