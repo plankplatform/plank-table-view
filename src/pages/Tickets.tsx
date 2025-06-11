@@ -5,6 +5,7 @@ import { myTheme } from '@/styles/agTheme';
 import { makeDatasource } from '@/lib/makeDatasource';
 import { ticketsColumns } from '@/columns/tickets';
 import { useQuery } from '@tanstack/react-query';
+import { TicketDetailRenderer } from '@/components/TicketDetailRenderer';
 
 export default function Tickets() {
   const { t } = useTranslation();
@@ -75,6 +76,10 @@ export default function Tickets() {
         pagination={true}
         paginationPageSize={20}
         serverSideDatasource={datasource}
+        masterDetail={true}
+        isRowMaster={() => true}
+        detailCellRenderer={TicketDetailRenderer}
+        detailRowHeight={200}
         //onGridReady={onGridReady}
       />
     </div>

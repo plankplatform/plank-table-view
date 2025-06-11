@@ -4,6 +4,15 @@ import { ColDef } from 'ag-grid-community';
 export const ticketsColumns = (t: TFunction, statuses: string[]): ColDef[] => {
   return [
     {
+      field: 'expand',
+      cellRenderer: 'agGroupCellRenderer',
+      headerName: '',
+      width: 40,
+      cellRendererParams: {
+        suppressCount: true,
+      },
+    },
+    {
       field: 'ticket_id',
       headerName: t('ID Ticket'),
       filter: 'agNumberColumnFilter',
