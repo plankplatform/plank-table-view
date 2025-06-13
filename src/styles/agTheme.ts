@@ -6,8 +6,9 @@ export const myTheme = themeQuartz.withPart(iconSetMaterial).withParams({
   borderColor: '#181D1F2E',
   browserColorScheme: 'light',
   columnBorder: false,
-  headerFontSize: 14,
+  headerFontSize: 12,
   rowBorder: true,
+  fontSize: 12,
 
   // backgroundColor: '#ffffff',
   // browserColorScheme: 'light',

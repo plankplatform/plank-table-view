@@ -1,18 +1,24 @@
 import { useTranslation } from 'react-i18next';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useCallback } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { myTheme } from '@/styles/agTheme';
 import { makeDatasource } from '@/lib/makeDatasource';
 import { ticketsColumns } from '@/columns/tickets';
 import { useQuery } from '@tanstack/react-query';
 import { TicketDetailRenderer } from '@/components/TicketDetailRenderer';
+import {
+  SizeColumnsToFitGridStrategy,
+  SizeColumnsToFitProvidedWidthStrategy,
+  SizeColumnsToContentStrategy,
+  GridReadyEvent,
+} from 'ag-grid-community';
 
 export default function Tickets() {
   const { t } = useTranslation();
   const gridRef = useRef<AgGridReact>(null);
 
   const { data: statuses } = useQuery({
-    queryKey: ['countries'],
+    queryKey: ['tickets-statuses'],
     queryFn: async () => {
       const token = sessionStorage.getItem('apitoken');
       const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/tickets/statuses`, {
@@ -32,10 +38,10 @@ export default function Tickets() {
 
   const defaultColDef = useMemo(
     () => ({
-      flex: 1,
-      sortable: true,
-      filter: true,
-      resizable: true,
+      sortable: false,
+      filter: false,
+      resizable: false,
+      suppressHeaderMenuButton: true
     }),
     []
   );
@@ -48,19 +54,16 @@ export default function Tickets() {
     });
   }, []);
 
-  // const onGridReady = async (params: any) => {
-  //   const api = params.api;
-
-  //   //const defaultFilter = statuses.filter((s: string) => s !== 'CLOSED');
-
-  //   api.setColumnFilterModel('processing_status', {
-  //     values: statuses
-  //   });
-
-
-  //   api.onFilterChanged();
-  // };
-
+  const autoSizeStrategy = useMemo<
+    | SizeColumnsToFitGridStrategy
+    | SizeColumnsToFitProvidedWidthStrategy
+    | SizeColumnsToContentStrategy
+  >(() => {
+    return {
+      type: "fitCellContents",
+    };
+  }, []);
+  
   return (
     <div className="ag-theme-alpine" style={{ height: '100vh', width: '100%' }}>
       <AgGridReact
@@ -80,7 +83,8 @@ export default function Tickets() {
         isRowMaster={() => true}
         detailCellRenderer={TicketDetailRenderer}
         detailRowHeight={200}
-        //onGridReady={onGridReady}
+        autoSizeStrategy={autoSizeStrategy}
+        //suppressCellFocus={true}
       />
     </div>
   );
